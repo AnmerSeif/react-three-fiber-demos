@@ -1,26 +1,16 @@
-import React, { useState } from 'react';
-import { Canvas, useResource, useThree } from 'react-three-fiber';
-import styled from 'styled-components';
-import { NumberField, Checkbox } from '@bekk/storybook';
-import GlobalStyle from './GlobalStyle';
-import { Color, Euler } from 'three';
-import Controls from './components/Controls';
-
-
-const Scene = () => {
-  const {
-    camera,
-    gl: { domElement }
-  } = useThree()
-  return (
-      <orbitControls args={[camera, domElement]} />
-  )
-}
+import React, { useState } from "react";
+import { Canvas } from "react-three-fiber";
+import styled from "styled-components";
+import { NumberField, Checkbox } from "@bekk/storybook";
+import GlobalStyle from "./GlobalStyle";
+import { Color, Euler, DoubleSide } from "three";
+import Controls from "./components/Controls";
+import Slider from "./components/Slider";
 
 const Row = styled.div`
   display: flex;
   height: 100%;
-  
+
   &:focus {
     outline: none;
   }
@@ -30,7 +20,7 @@ const Col = styled.div`
   flex-grow: 1;
   flex-basis: 0;
   height: 100%;
-  
+
   &:focus {
     outline: none;
   }
@@ -48,7 +38,7 @@ const CanvasContainer = styled.div`
   }
 
   &:after {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     right: 0;
@@ -66,43 +56,127 @@ const ControlsContainer = styled.div`
 `;
 
 const Heading = styled.h1`
-  font-family: 'FFDINWebProLight', sans-serif;
+  font-family: "FFDINWebProLight", sans-serif;
   color: white;
   text-transform: uppercase;
 `;
 
 function App() {
-  const [ref, light] = useResource();
-  const [number, setNumber] = useState(1);
+  const [scaleX, setScaleX] = useState(1);
+  const [scaleY, setScaleY] = useState(1);
+  const [scaleZ, setScaleZ] = useState(1);
   const [orbitControls, setOrbitControls] = useState(false);
-
 
   return (
     <>
-    <GlobalStyle />
-    <Row>
-      <Col>    
-      <CanvasContainer>
-        <Canvas shadowMap={true}>
-          <Controls enabled={orbitControls}/>
-          <ambientLight color={new Color('#1f1f1f')} />
-          <pointLight castShadow={true} ref={ref} position={[10, 10, 10]} />
-          <mesh castShadow={true} receiveShadow={true} scale={[number,1,1]} position={[0,0,0]} rotation={new Euler(10,10,0)} >
-            <boxBufferGeometry attach="geometry" args={[1, 1, 1]}/>
-            <meshStandardMaterial  attach="material" color='white' transparent/>
-          </mesh>
-        </Canvas>
-      </CanvasContainer>
-    </Col>
-    <Col>
-      <ControlsContainer>
-        <Heading>Adjustments</Heading>
-        <Checkbox label="Aktiver OrbitControls" isChecked={orbitControls} onDarkBackground={true} onChange={() => {setOrbitControls(!orbitControls)}} />
-        <NumberField value={number} onChange={(n) => {setNumber(n)}} ></NumberField>
-      </ControlsContainer>
-    </Col>
-    </Row>
-
+      <GlobalStyle />
+      <Row>
+        <Col>
+          <CanvasContainer>
+            <Canvas
+              shadowMap={true}
+              camera={{ fov: 100, position: [-2, 2, 3] }}
+            >
+              <Controls enabled={orbitControls} />
+              <ambientLight color={new Color("#1f1f1f")} />
+              <pointLight
+                shadowMapHeight="1080"
+                shadowMapWidth="1920"
+                castShadow={true}
+                position={[0, 3, 6]}
+              />
+              <pointLight
+                shadowMapHeight="1080"
+                shadowMapWidth="1920"
+                castShadow={true}
+                position={[-3, 3, 6]}
+              />
+              <pointLight
+                shadowMapHeight="1080"
+                shadowMapWidth="1920"
+                castShadow={true}
+                position={[3, 3, 6]}
+              />
+              <mesh position={[0, 0, -2]} receiveShadow>
+                <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
+                <meshStandardMaterial
+                  side={DoubleSide}
+                  attach="material"
+                  color="#171717"
+                />
+              </mesh>
+              <mesh
+                position={[0, -0.5, 0]}
+                rotation={new Euler(1.57, 0, 0)}
+                receiveShadow
+              >
+                <planeBufferGeometry attach="geometry" args={[1000, 1000]} />
+                <meshStandardMaterial
+                  side={DoubleSide}
+                  attach="material"
+                  color="#171717"
+                />
+              </mesh>
+              <mesh
+                castShadow={true}
+                receiveShadow={true}
+                scale={[scaleX, scaleY, scaleZ]}
+                position={[0, 0, 0]}
+              >
+                <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
+                <meshStandardMaterial
+                  attach="material"
+                  color="white"
+                  transparent
+                />
+              </mesh>
+            </Canvas>
+          </CanvasContainer>
+        </Col>
+        <Col>
+          <ControlsContainer>
+            <Heading>Adjustments</Heading>
+            <Checkbox
+              label="Aktiver OrbitControls"
+              isChecked={orbitControls}
+              onDarkBackground={true}
+              onChange={() => {
+                setOrbitControls(!orbitControls);
+              }}
+            />
+            <Slider
+              min={0}
+              max={50}
+              step={1}
+              startValue={scaleX}
+              label={"scaleX:"}
+              onSliderChange={value => {
+                setScaleX(value);
+              }}
+            />
+            <Slider
+              min={0}
+              max={50}
+              step={1}
+              startValue={scaleY}
+              label={"scaleY:"}
+              onSliderChange={value => {
+                setScaleY(value);
+              }}
+            />
+            <Slider
+              min={0}
+              max={50}
+              step={1}
+              startValue={scaleZ}
+              label={"scaleZ:"}
+              onSliderChange={value => {
+                setScaleZ(value);
+              }}
+            />
+          </ControlsContainer>
+        </Col>
+      </Row>
     </>
   );
 }

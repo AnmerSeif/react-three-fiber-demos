@@ -1,11 +1,10 @@
+import { createGlobalStyle } from "styled-components";
 
-import { createGlobalStyle } from 'styled-components';
-
-const bekkFontEOT = require('./fonts/32ABFA_0_0.eot');
-const bekkFontEmbeddedOpentype = require('./fonts/32ABFA_0_0.eot?#iefix');
-const bekkFontWOFF2 = require('./fonts/32ABFA_0_0.woff2');
-const bekkFontWOFF = require('./fonts/32ABFA_0_0.woff');
-const bekkFontTTF = require('./fonts/32ABFA_0_0.ttf');
+const bekkFontEOT = require("./fonts/32ABFA_0_0.eot");
+const bekkFontEmbeddedOpentype = require("./fonts/32ABFA_0_0.eot?#iefix");
+const bekkFontWOFF2 = require("./fonts/32ABFA_0_0.woff2");
+const bekkFontWOFF = require("./fonts/32ABFA_0_0.woff");
+const bekkFontTTF = require("./fonts/32ABFA_0_0.ttf");
 
 const GlobalStyle = createGlobalStyle`
   @font-face {
@@ -64,6 +63,6 @@ const GlobalStyle = createGlobalStyle`
       url('./fonts/5591111/4ba8e512-e6fb-494f-afd3-a7b68b2e5efb.woff') format('font-woff'),
       url('./fonts/5591111/d988fb64-309d-4c7f-9ded-4e9663aa6061.ttf') format('truetype');
   } */
-`
+`;
 
 export default GlobalStyle;
