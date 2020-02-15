@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Canvas } from "react-three-fiber";
+import { useSpring, animated } from "react-spring/three";
 import styled from "styled-components";
 import { NumberField, Checkbox } from "@bekk/storybook";
 import GlobalStyle from "./GlobalStyle";
 import { Color, Euler, DoubleSide } from "three";
 import Controls from "./components/Controls";
 import Slider from "./components/Slider";
+import { easeQuadOut, easeCubic } from "d3-ease";
 
 const Row = styled.div`
   display: flex;
@@ -60,6 +62,30 @@ const Heading = styled.h1`
   color: white;
   text-transform: uppercase;
 `;
+
+interface BoxProps {
+  scaleX: number;
+  scaleY: number;
+  scaleZ: number;
+}
+
+const Box: React.FC<BoxProps> = ({ scaleX, scaleY, scaleZ }) => {
+  const { color, pos, ...props } = useSpring({
+    scale: [scaleX, scaleY, scaleZ],
+    config: { duration: 1000, easing: easeQuadOut }
+  });
+  return (
+    <animated.mesh
+      castShadow={true}
+      receiveShadow={true}
+      position={[0, 0, 0]}
+      {...props}
+    >
+      <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
+      <meshStandardMaterial attach="material" color="white" transparent />
+    </animated.mesh>
+  );
+};
 
 function App() {
   const [scaleX, setScaleX] = useState(1);
@@ -117,19 +143,7 @@ function App() {
                   color="#171717"
                 />
               </mesh>
-              <mesh
-                castShadow={true}
-                receiveShadow={true}
-                scale={[scaleX, scaleY, scaleZ]}
-                position={[0, 0, 0]}
-              >
-                <boxBufferGeometry attach="geometry" args={[1, 1, 1]} />
-                <meshStandardMaterial
-                  attach="material"
-                  color="white"
-                  transparent
-                />
-              </mesh>
+              <Box scaleX={scaleX} scaleY={scaleY} scaleZ={scaleZ} />
             </Canvas>
           </CanvasContainer>
         </Col>
