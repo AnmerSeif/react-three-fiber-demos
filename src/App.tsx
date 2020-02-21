@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Canvas } from "react-three-fiber";
+import React, { useState, Suspense } from "react";
+import { Canvas, useLoader } from "react-three-fiber";
 import { useSpring, animated } from "react-spring/three";
 import styled from "styled-components";
 import { NumberField, Checkbox } from "@bekk/storybook";
@@ -8,6 +8,9 @@ import { Color, Euler, DoubleSide } from "three";
 import Controls from "./components/Controls";
 import Slider from "./components/Slider";
 import { easeQuadOut, easeCubic } from "d3-ease";
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+// @ts-ignore
+import selbekkGLB from './gltf/selbekk-face-3d/model.glb';
 
 const Row = styled.div`
   display: flex;
@@ -67,6 +70,13 @@ interface BoxProps {
   scaleX: number;
   scaleY: number;
   scaleZ: number;
+}
+
+
+const Selbekk : React.FC = () => {
+  const gltf = useLoader(GLTFLoader, selbekkGLB);
+  gltf.scene.scale.set(7,7,7);
+  return <primitive object={gltf.scene}  position={[0, 1, 0]} />
 }
 
 const Box: React.FC<BoxProps> = ({ scaleX, scaleY, scaleZ }) => {
@@ -143,7 +153,7 @@ function App() {
                   color="#171717"
                 />
               </mesh>
-              <Box scaleX={scaleX} scaleY={scaleY} scaleZ={scaleZ} />
+              <Suspense fallback={<Box scaleX={scaleX} scaleY={scaleY} scaleZ={scaleZ} />}><Selbekk /></Suspense>
             </Canvas>
           </CanvasContainer>
         </Col>
