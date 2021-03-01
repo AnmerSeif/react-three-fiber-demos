@@ -15,7 +15,7 @@
     "react-spring": "^9.0.0-beta.34",
     "react-three-fiber": "^4.0.16",
     "styled-components": "^5.0.1",
-    "three": "^0.113.2",
+    "three": "^0.125.0",
     "typescript": "^3.7.5"
   },
   "scripts": {
